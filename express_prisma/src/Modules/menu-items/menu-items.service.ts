@@ -79,6 +79,30 @@ export class MenuItemsService {
   */
 
   async getMenuItems() {
-    throw new Error('TODO in task 3');
+    let includeNested = this.setNestedPropertyValue({}, 'children', true, 4);
+    return await this.app.getDataSource().menuItem.findMany({
+        where: {
+            parentId: null
+        },
+        include: includeNested
+      });
   }
+  
+  setNestedPropertyValue(obj: any, field: any, val: any, counter: number) {
+    let cur = obj;
+
+    for (let i = 1; i <= counter; i++) {
+        if (i === counter) {
+            cur[field] = val;
+        } else {
+            cur[field] = {};
+            cur = cur[field];
+            cur['include'] = {};
+            cur = cur['include'];
+        }
+    }
+
+    return obj;
+}
+
 }
